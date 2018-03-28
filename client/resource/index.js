@@ -9,24 +9,10 @@ function resource(list) {
     sourceList[item.key] = (params) => {
       switch (item.method) {
         case 'get':
-          return new Promise((resolve, reject) => {
-              Axios.get(item.url, params).then((response) => {
-                resolve(response);
-              }, (response) => {
-                reject(response);
-              })
-          })
-          // return Axios.get(item.url, params)
+          return Axios.get(item.url, params)
           break;
         case 'post':
-          return new Promise((resolve, reject) => {
-              Axios.post(item.url, params).then((response) => {
-                resolve(response);
-              }, (response) => {
-                reject(response);
-              })
-          })
-          // return Axios.get(item.url, params)
+          return Axios.post(item.url, params)
           break;
       }
     }

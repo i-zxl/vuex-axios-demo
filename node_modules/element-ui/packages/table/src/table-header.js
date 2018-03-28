@@ -1,3 +1,4 @@
+import { hasClass, addClass, removeClass } from 'element-ui/src/utils/dom';
 import ElCheckbox from 'element-ui/packages/checkbox';
 import ElTag from 'element-ui/packages/tag';
 import Vue from 'vue';
@@ -101,7 +102,7 @@ export default {
                     on-mouseout={ this.handleMouseOut }
                     on-mousedown={ ($event) => this.handleMouseDown($event, column) }
                     on-click={ ($event) => this.handleHeaderClick($event, column) }
-                    class={ [column.id, column.order, column.headerAlign, column.className || '', rowIndex === 0 && this.isCellHidden(cellIndex, columns) ? 'is-hidden' : '', !column.children ? 'is-leaf' : '', column.labelClassName] }>
+                    class={ [column.id, column.order, column.headerAlign, column.className || '', rowIndex === 0 && this.isCellHidden(cellIndex, columns) ? 'is-hidden' : '', !column.children ? 'is-leaf' : '', column.labelClassName, column.sortable ? 'is-sortable' : ''] }>
                     <div class={ ['cell', column.filteredValue && column.filteredValue.length > 0 ? 'highlight' : '', column.labelClassName] }>
                     {
                       column.renderHeader
@@ -295,7 +296,7 @@ export default {
         const columnRect = columnEl.getBoundingClientRect();
         const minLeft = columnRect.left - tableLeft + 30;
 
-        columnEl.classList.add('noclick');
+        addClass(columnEl, 'noclick');
 
         this.dragState = {
           startMouseLeft: event.clientX,
@@ -344,7 +345,7 @@ export default {
           document.ondragstart = null;
 
           setTimeout(function() {
-            columnEl.classList.remove('noclick');
+            removeClass(columnEl, 'noclick');
           }, 0);
         };
 
@@ -368,9 +369,15 @@ export default {
         const bodyStyle = document.body.style;
         if (rect.width > 12 && rect.right - event.pageX < 8) {
           bodyStyle.cursor = 'col-resize';
+          if (hasClass(target, 'is-sortable')) {
+            target.style.cursor = 'col-resize';
+          }
           this.draggingColumn = column;
         } else if (!this.dragging) {
           bodyStyle.cursor = '';
+          if (hasClass(target, 'is-sortable')) {
+            target.style.cursor = 'pointer';
+          }
           this.draggingColumn = null;
         }
       }
@@ -395,8 +402,8 @@ export default {
       }
 
       if (target && target.tagName === 'TH') {
-        if (target.classList.contains('noclick')) {
-          target.classList.remove('noclick');
+        if (hasClass(target, 'noclick')) {
+          removeClass(target, 'noclick');
           return;
         }
       }

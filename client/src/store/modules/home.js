@@ -18,13 +18,15 @@ const mutations = {
   [types.PARAMETER] (state, params) {
       state.param = Object.assign({}, params);
   }
+
 }
 
 const getters = {
-  getUser: state =>  state.user
+  getUser: state => state.user
 }
 
 export default {
+  namespaced: 'Home'
   state,
   mutations,
   getters
